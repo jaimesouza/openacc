@@ -7,8 +7,13 @@ CFLAGS = -fast -ta=turing -Minfo=all
 
 default: all
 
-all:
-	$(CC) $(CFLAGS) -o jacobi-laplace-serial.o jacobi-laplace-serial.c
+all: serial gpu
+
+serial:
+	$(CC) $(CFLAGS) -o serial-jacobi-laplace.o jacobi-laplace-serial.c
+
+gpu:
+	$(CC) $(CFLAGS) -o openacc-jacobi-laplace.o jacobi-laplace-openacc.c
 
 clean:
 	rm -f *.o
