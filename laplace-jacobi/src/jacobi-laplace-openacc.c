@@ -22,7 +22,7 @@ int main(){
     const int ITER_MAX = 1000;
 
     // threshold of convergence
-    const float CONV_THRESHOLD = 0.0;
+    const float CONV_THRESHOLD = 1.0e-5f;
 
     // matrix to be solved
     float A[N][M];
@@ -78,7 +78,7 @@ int main(){
     gettimeofday(&end_kernel, NULL);
     double kernel_time = (double)(end_kernel.tv_sec-start_kernel.tv_sec)+(double)(end_kernel.tv_usec-start_kernel.tv_usec)/1000000;
 
-    printf("Final matrix: \n");
+    printf("Mesh dimension %d x %d: \n", N, M);
 
     // print out the results
     for (int i = 0; i < N; i++){

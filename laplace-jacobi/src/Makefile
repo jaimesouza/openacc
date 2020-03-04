@@ -2,8 +2,7 @@
 CC = pgcc
 
 # flags
-CFLAGS = -fast -ta=turing -Minfo=all
-#CFLAGS =
+CFLAGS = -fast -acc -ta=nvidia,time -Minfo=all
 
 default: all
 
