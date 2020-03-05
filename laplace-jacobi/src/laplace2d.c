@@ -3,6 +3,7 @@
 #include "sys/time.h"
 
 // return the maximum value
+#pragma acc routine vector
 int max(float a, float b){
     if( a > b )
         return a;
@@ -34,6 +35,7 @@ int main(){
     srand(10);
 
     // initialize the matrix
+    #pragma acc parallel loop
     for (int i = 0; i < N; i++){
         for (int j = 0; j < M; j++){
             A[i][j] = rand() % 100;
@@ -52,11 +54,13 @@ int main(){
      * Jacobi iteration
      * This loop will end if either the maximum change reaches below a set threshold (convergence) or a fixed number of iterations have completed
      */
-    while ( err > CONV_THRESHOLD && iter < ITER_MAX ) {
+     #pragma acc data create(Anew[:N][:M]) copy(A[:N][:M])
+     while ( err > CONV_THRESHOLD && iter < ITER_MAX ) {
 
         err = 0.0;
 
         // calculates the Laplace equation to determine each cell's next value
+        #pragma acc parallel loop reduction(max:err) collapse(2)
         for( int i = 1; i < N-1; i++) {
             for(int j = 1; j < M-1; j++) {
                 Anew[i][j] = 0.25 * (A[i][j+1] + A[i][j-1] + A[i - 1][j] + A[i+1][j]);
@@ -65,6 +69,7 @@ int main(){
         }
 
         // copies the next values into the working array for the next iteration
+        #pragma acc parallel loop collapse(2)
         for( int i = 1; i < N-1; i++) {
             for( int j = 1; j < M-1; j++ ) {
                 A[i][j] = Anew[i][j];
