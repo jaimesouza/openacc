@@ -1,19 +1,17 @@
-# Your compiler
-CC = pgcc
+CC       = pgcc
+CCFLAGS  = -I../common
+ACCFLAGS = -acc -ta=nvidia,time -Minfo=accel
+OMPFLAGS = -fast -mp -Minfo
 
-# flags
-CFLAGS = -fast -acc -ta=nvidia,time -Minfo=all
+BIN =  laplace2d_omp laplace2d_acc
 
-default: all
+all: $(BIN)
 
-all: serial gpu
+laplace2d_acc: laplace2d.c
+	$(CC) $(CCFLAGS) $(ACCFLAGS) -o $@ $<
 
-serial:
-	$(CC) $(CFLAGS) -o serial-jacobi-laplace.o jacobi-laplace-serial.c
-
-gpu:
-	$(CC) $(CFLAGS) -o openacc-jacobi-laplace.o jacobi-laplace-openacc.c
+laplace2d_omp: laplace2d.c
+	$(CC) $(CCFLAGS) $(OMPFLAGS) -o $@ $<
 
 clean:
-	rm -f *.o
-.PHONY: clean
+	$(RM) $(BIN)
